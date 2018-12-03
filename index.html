@@ -23,6 +23,9 @@
         list-style-type: lower-roman;
         list-style-position: inside;
     }
+    .acm li {
+    	list-style: inside url("acm.gif");
+    }
     .cntr {
         text-align:center;
     }
@@ -152,8 +155,8 @@
             <br><a href='elb-request-cert.png'><img src='elb-request-cert.png'></a>
         </li>
         <li>
-            AWS Certificate Manager
-            <ul>
+            AWS Certificate Manager (ACM)
+            <ul class='acm'>
                 <li>Add the domain names we want our certificate to cover. As we do not know all of the subdomains we may need, we will add the naked domain plus a <em>wildcard</em> domain. This means our certificate will cover awsbootcamp.byu.edu along with any subdomains (eg www.awsbootcamp.byu.edu, mysite.awsbootcamp.byu.edu, etc) 
                     <br><a href='acm-certificate.png'><img src='acm-certificate.png'></a>
                 </li>
