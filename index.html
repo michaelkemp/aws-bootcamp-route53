@@ -94,7 +94,7 @@
 <h2>Step 1. Create a Hosted Zone in Route 53</h2>
     <p>Before BYU begin handing off requests for a portion of their domain, we need to create a Hosted Zone in Route 53 to receive those requests. <span class='highlight'>Creating a Hosted Zone does <em>NOT</em> give us authority over it</span> - the authority is granted by the owner of the parent domain. In Step 2, we will request that authority.</p>
     <ol>
-        <li>To check that the domain we are requesting authority over is not currently in use, we go to the Windows Command Prompt (or Terminal on Mac/Linux) and enter the command <span class='eg'><em>nslookup mydomain.byu.edu</em></span>. This will perform a name server look up for our desired domain.
+        <li>To check that the domain we are requesting authority over is not currently in use, we go to the Windows Command Prompt (or Terminal on Mac/Linux) and enter the command <span class='eg'><em>nslookup awsbootcamp.byu.edu</em></span>. This will perform a name server look up for our desired domain.
             <br><a href='nslookup.png'><img src='nslookup.png'></a>
         </li>
         <li>Log in to the AWS console and go to Route 53 
@@ -113,10 +113,10 @@
     <ol>
         <li>Go to the Service Catalog <a href="https://it.byu.edu/byu/byu_service_catalog_2.do">https://it.byu.edu/byu/byu_service_catalog_2.do</a> and log in.</li>
         <li>Search for <code>Hostname Registration</code></li>
-        <li>On the Hostname Registration page, choose <code>Hostname Registration</code> from the <code>Order|Modify</code> dropdown 
+        <li>On the Hostname Registration page, choose <code>Hostname Registration</code> from the <code>Order|Modify</code> dropdown. 
             <br><a href='hostname-registration.png'><img src='hostname-registration.png'></a>
         </li>
-        <li>Fill in the form as shown. Enter the desired <span class='highlight'>Domain Name in the DNS Name field</span>, and the list of <span class='highlight'>Name Servers (from Step 1) in the IP Address field</span>. 
+        <li>Fill in the form as shown. Enter the <span class='highlight'>desired Domain Name in the DNS Name field</span>, and the <span class='highlight'>list of Name Servers (from Step 1) in the IP Address field.</span>. 
             <br><a href='hostname-screen.png'><img src='hostname-screen.png'></a>
         </li>
         <li>Wait... Time passes... Once our registration is complete (this is a manual process, and may take a day), we become the authority over our domain (and any subdomains we create) and can administer it through Route 53.
@@ -132,7 +132,7 @@
         <li>Note the IPv4 Address of the EC2 instance - in this case 34.210.88.165
             <br><a href='ec2-detail.png'><img src='ec2-detail.png'></a>
         </li>
-        <li>In our Hosted Zone within Route 53, click <code>Create Record Set</code>. Create an <b>A Record</b> with <span class='highlight'>a name</span> and the <span class='highlight'>IP address of our EC2 instance</span>. (If the name is left blank, the naked domain name will be mapped to the EC2 instance.)
+        <li>In our Hosted Zone within Route 53, click <code>Create Record Set</code>. Create an <b>A Record</b> with a <span class='highlight'>name</span> and the <span class='highlight'>IP address of our EC2 instance</span>. (If the name is left blank, the naked domain name will be mapped to the EC2 instance.)
             <br><a href='ec2-dns.png'><img src='ec2-dns.png'></a>
         </li>
         <li>Visit the site by typing the new domain name (ec2.awsbootcamp.byu.edu) into our browser address bar.
@@ -187,7 +187,7 @@
         <li>To redirect any traffic that attempts to reach our site via HTTP (port 80), add a second listener to our ELB for port 80, and have it redirect all traffic to HTTPS (port 443).
             <br><a href='elb-redirect.png'><img src='elb-redirect.png'></a>
         </li>
-        <li>Our Bacon Ipsum site is now encrypted in transit as it is routed across the Internet to our users - secure bacon.
+        <li>Our Bacon Ipsum site is now encrypted in transit as it is routed across the Internet to our users. Mmmm, secure bacon.
             <br><a href='ec2-site.png'><img src='ec2-site.png'></a>
         </li>
 
