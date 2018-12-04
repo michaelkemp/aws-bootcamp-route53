@@ -26,6 +26,10 @@
     .acm li {
     	list-style: inside url("acm.gif");
     }
+    .toc li {
+    	font-size:1.4em;
+    	list-style: none;
+    }
     .cntr {
         text-align:center;
     }
@@ -41,19 +45,36 @@
         background-color:#EEE;
         padding:1px 3px;
     }
+    a, a:visited {
+    	text-decoration: none;
+    	color:#369;
+    }
 </style>
 <body>
 
 
 <h1 class='cntr'>AWS Route 53</h1>
 
-<h2>Introduction</h2>
+<h2 id="contents">Contents</h2>	
+	<ul class="toc">
+		<li><a href="#introduction">Introduction</a></li>
+		<li><a href="#glossary">Glossary</a></li>
+		<li><a href="#step1">Create a Hosted Zone in Route 53</a></li>
+		<li><a href="#step2">Request Hostname Registration</a></li>
+		<li><a href="#step3a">EC2 - Simple Web Server</a></li>
+		<li><a href="#step3b">Elastic Load Balancer with HTTPS</a></li>
+		<li><a href="#step3c">S3 - Static Website</a></li>
+		<li><a href="#step3d">Elastic Beanstalk</a></li>
+	</ul>
+
+<br><br>
+<h2 id="introduction">Introduction</h2>
     <p>DNS is a mechanism for translating IP addresses (176.32.103.205) to domain names (amazon.com). In essence, it is a large, distributed lookup table of IP address to domain name mappings. Translation requests are handled by Domain Name Servers; Route 53 is AWS's implementation of DNS.</p>
     <p>BYU has <em>authority</em> over a portion of this lookup table - the portion that ends in <u>.byu.edu</u>. The authority over the <u>.edu</u> portion hands off all requests ending with <u>.byu.edu</u> to BYU's domain name servers.</p>
     <p>This document steps through gaining <em>authority</em> over a portion of the <u>.byu.edu</u> domain and administering it through Route 53.</p>
 
 <br><br>
-<h2>Glossary</h2>
+<h2 id="glossary">Glossary</h2>
     <p>
         <h4>Hosted Zone</h4>
         A DNS <em>zone</em> is any distinct, contiguous portion of the domain name space in the Domain Name System (DNS) for which administrative responsibility has been delegated to a single manager. The domain name space of the Internet is organized into a hierarchical layout of subdomains below the DNS root domain. [Wikipedia]
@@ -94,7 +115,7 @@
     </p>
 
 <br><br>
-<h2>Step 1. Create a Hosted Zone in Route 53</h2>
+<h2 id="step1">Step 1. Create a Hosted Zone in Route 53</h2>
     <p>Before BYU begin handing off requests for a portion of their domain, we need to create a Hosted Zone in Route 53 to receive those requests. <span class='highlight'>Creating a Hosted Zone does <em>NOT</em> give us authority over it</span> - the authority is granted by the owner of the parent domain. In Step 2, we will request that authority.</p>
     <ol>
         <li>To check that the domain we are requesting authority over is not currently in use, we go to the Windows Command Prompt (or Terminal on Mac/Linux) and enter the command <span class='eg'><em>nslookup awsbootcamp.byu.edu</em></span>. This will perform a name server look up for our desired domain.
@@ -112,7 +133,7 @@
     </ol>
 
 <br><br>
-<h2>Step 2. Request Hostname Registration</h2>
+<h2 id="step2">Step 2. Request Hostname Registration</h2>
     <ol>
         <li>Go to the Service Catalog <a href="https://it.byu.edu/byu/byu_service_catalog_2.do">https://it.byu.edu/byu/byu_service_catalog_2.do</a> and log in.</li>
         <li>Search for <code>Hostname Registration</code></li>
@@ -129,7 +150,7 @@
     </ol>
 
 <br><br>
-<h2>Step 3.a. EC2 - Simple Web Server</h2>
+<h2 id="step3a">Step 3.a. EC2 - Simple Web Server</h2>
     <p>This is a trivial setup because our EC2 instance already responds directly to calls to its IP address. All we need to do is create a DNS mapping from our EC2 instance's IP address to a domain name.</p>
     <ol>
         <li>Note the IPv4 Address of the EC2 instance - in this case 34.210.88.165
@@ -144,7 +165,7 @@
     </ol>
 
 <br><br>    
-<h2>Step 3.b. Elastic Load Balancer with HTTPS</h2>
+<h2 id="step3b">Step 3.b. Elastic Load Balancer with HTTPS</h2>
     <p>If we want our web server to be more secure and resilient, we can place it behind an Elastic Load Balancer.</p> 
     <p>AWS also makes it easy to add an SSL Certificate and serve our site over HTTPS without the need to import Certificates onto our EC2 instance, or change Apache configuration files.</p>
     <ol>
@@ -155,7 +176,7 @@
             <br><a href='elb-request-cert.png'><img src='elb-request-cert.png'></a>
         </li>
         <li>
-            AWS Certificate Manager (ACM)
+            AWS Certificate Manager (<a href="https://aws.amazon.com/certificate-manager/">ACM</a>)
             <ul class='acm'>
                 <li>Add the domain names we want our certificate to cover. As we do not know all of the subdomains we may need, we will add the naked domain plus a <em>wildcard</em> domain. This means our certificate will cover awsbootcamp.byu.edu along with any subdomains (eg www.awsbootcamp.byu.edu, mysite.awsbootcamp.byu.edu, etc) 
                     <br><a href='acm-certificate.png'><img src='acm-certificate.png'></a>
@@ -197,7 +218,7 @@
     </ol>
 
 <br><br>
-<h2>Step 3.c. S3 - Static Website</h2>
+<h2 id="step3c">Step 3.c. S3 - Static Website</h2>
     <p>For a static website - a site that does not require any processing on the server side - an S3 bucket is a cheap and scalable option.</p>
     <p>In order to use our own domain URL to access a static website in an S3 bucket, we <em>MUST</em> give our bucket the same name as the domain. We cannot use a CNAME record to alias the AWS assigned S3 URL.</p>
     <ol>
@@ -219,7 +240,7 @@
      </ol>
 
 <br><br>
-<h2>Step 3.d. Elastic Beanstalk</h2>
+<h2 id="step3d">Step 3.d. Elastic Beanstalk</h2>
     <p>Setting up an Elastic Beanstalk is outside the scope of this document, due to the variation in components and features that a Beanstalk can consist of.</p>
     <p>Once set up, routing our domain to our beanstalk is a matter of using an Alias in Route 53. Adding HTTPS access will depend on the components of our beanstalk.</p>
 
